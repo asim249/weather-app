@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: linear-gradient(to right, #74ebd5, #ACB6E5);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  width: 90%;
+  max-width: 600px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.row {
+  width: 100%;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  text-align: center;
+}
+
+form {
+  width: 100%;
+}
+
+#search {
+  width: 80%;
+  padding: 15px 25px;
+  font-size: 20px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+#search:focus {
+  box-shadow: 0 0 10px #fff;
+}
+
+#weather {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  gap: 10px;
+}
+
+#weather img {
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+#weather h2 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+#weather h4 {
+  font-size: 24px;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+@media (max-width: 600px) {
+  #search {
+    width: 100%;
+  }
+
+  #weather h2 {
+    font-size: 36px;
+  }
+
+  #weather h4 {
+    font-size: 20px;
+  }
+}
+
+
+
+
+    </style>
+</head>
+<body>
+    <main>
+        <div class="row" style="text-align: center;">
+        <form action="">
+            <input type="search" id="search" placeholder="search by city name">
+        </form>
+        </div>
+    <div class="row" id="weather">
+        <!-- <div>
+            <img src="" alt="">
+        </div>
+        <div>
+            <h2>32 C</h2>
+            <h4>Clear</h4>
+        </div> -->
+    </div>
+    </main>
+
+
+    <script>
+const API_KEY = `2f7cf4a292827efd5370de302d52c413`
+// https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric
+// https://openweathermap.org/img/wn/${icon}@2x.png
+
+const form = document.querySelector('form');
+const search = document.querySelector('#search');
+const weather = document.querySelector('#weather');
+
+// for weather
+const getweather = async(city) => {
+    weather.innerHTML = `<h2>Loading...</h2>`
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+    const response = await fetch(url);
+    const data = await response.json();
+     return showWeather(data)
+}
+showWeather = (data) => {
+    if(data.cod == "404"){
+        weather.innerHTML = `<h4>City not found</h4>`;
+        return;
+    }
+    weather.innerHTML = `
+        <div>
+            <img src=" https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="">
+        </div>
+        <div>
+            <h2>${data.main.temp} C</h2>
+            <h4>${data.weather[0].main}</h4>
+        </div>
+    `
+}
+
+
+form.addEventListener(
+    'submit', 
+    function(event){
+        getweather(search.value);
+        event.preventDefault();
+    }
+)
+
+
+    </script>
+</body>
+</html>
